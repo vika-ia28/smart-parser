@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0, viewport-fit=cover">
+    <title>SmartParser | Универсальный парсер документов</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📄</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <!-- Мобильное меню -->
+        <div class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-header">
+                <div class="logo">
+                    <i class="fas fa-file-contract"></i>
+                    <h2>Smart<span class="logo-accent">Parser</span></h2>
+                </div>
+                <button class="close-mobile-menu">&times;</button>
+            </div>
+            <div class="mobile-nav-links">
+                <a href="#upload" class="mobile-nav-link active">
+                    <i class="fas fa-upload"></i> Загрузка
+                </a>
+                <a href="#parse" class="mobile-nav-link">
+                    <i class="fas fa-cogs"></i> Парсинг
+                </a>
+                <a href="#results" class="mobile-nav-link">
+                    <i class="fas fa-table"></i> Результаты
+                </a>
+                <a href="#export" class="mobile-nav-link">
+                    <i class="fas fa-download"></i> Экспорт
+                </a>
+                <button class="btn-premium mobile-premium">
+                    <i class="fas fa-crown"></i> PRO версия
+                </button>
+            </div>
+        </div>
+
+        <!-- Шапка -->
+        <header class="header">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-file-contract"></i>
+                    <h1>Smart<span class="logo-accent">Parser</span></h1>
+                </div>
+                <div class="nav-links desktop-nav">
+                    <a href="#upload" class="nav-link active"><i class="fas fa-upload"></i> Загрузка</a>
+                    <a href="#parse" class="nav-link"><i class="fas fa-cogs"></i> Парсинг</a>
+                    <a href="#results" class="nav-link"><i class="fas fa-table"></i> Результаты</a>
+                    <a href="#export" class="nav-link"><i class="fas fa-download"></i> Экспорт</a>
+                </div>
+                <div class="user-menu">
+                    <button class="btn-premium">
+                        <i class="fas fa-crown"></i> PRO
+                    </button>
+                </div>
+            </nav>
+
+            <div class="hero">
+                <h2>Универсальный парсер первичных документов</h2>
+                <p class="hero-subtitle">Извлекает реквизиты из PDF, Excel, CSV → нормализует → выгружает в единую таблицу</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <i class="fas fa-bolt"></i>
+                        <span>Обработка за 5 сек</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Конфиденциально</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Точность 99%</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <!-- Секция загрузки -->
+            <section id="upload" class="section active">
+                <div class="section-header">
+                    <h3><i class="fas fa-cloud-upload-alt"></i> Загрузка документов</h3>
+                    <p>Загрузите файлы в форматах PDF, Excel (XLS/XLSX), CSV</p>
+                </div>
+
+                <div class="upload-zone" id="dropZone">
+                    <div class="upload-icon">
+                        <i class="fas fa-file-import"></i>
+                    </div>
+                    <h4>Перетащите файлы сюда</h4>
+                    <p class="upload-hint">или нажмите для выбора</p>
+                    <input type="file" id="fileInput" multiple accept=".pdf,.xls,.xlsx,.csv,.txt,.jpg,.jpeg,.png">
+
+                    <div class="supported-formats">
+                        <div class="format-badge">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </div>
+                        <div class="format-badge">
+                            <i class="fas fa-file-excel"></i> Excel
+                        </div>
+                        <div class="format-badge">
+                            <i class="fas fa-file-csv"></i> CSV
+                        </div>
+                        <div class="format-badge">
+                            <i class="fas fa-file-alt"></i> TXT
+                        </div>
+                        <div class="format-badge">
+                            <i class="fas fa-file-image"></i> Images
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Выбранные файлы -->
+                <div class="selected-files">
+                    <div class="files-header">
+                        <h5><i class="fas fa-folder-open"></i> Выбранные файлы (<span id="fileCount">0</span>)</h5>
+                        <button class="btn-small" id="clearAllBtn">
+                            <i class="fas fa-trash-alt"></i> Очистить все
+                        </button>
+                    </div>
+                    <div class="files-list" id="filesList">
+                        <div class="empty-state">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Файлы еще не добавлены</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Настройки парсинга -->
+                <div class="settings-card">
+                    <h5><i class="fas fa-sliders-h"></i> Настройки парсинга</h5>
+                    <div class="settings-grid">
+                        <div class="setting">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="autoDetect" checked>
+                                <span class="checkmark"></span>
+                                Автоматическое определение типа документа
+                            </label>
+                        </div>
+                        <div class="setting">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="extractTables" checked>
+                                <span class="checkmark"></span>
+                                Извлекать табличные данные
+                            </label>
+                        </div>
+                        <div class="setting">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="normalizeData" checked>
+                                <span class="checkmark"></span>
+                                Нормализовать данные
+                            </label>
+                        </div>
+                        <div class="setting">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="mergeSimilar" checked>
+                                <span class="checkmark"></span>
+                                Объединять похожие записи
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-primary btn-large" id="parseBtn">
+                        <i class="fas fa-play-circle"></i> Начать парсинг
+                    </button>
+                    <button class="btn-secondary" id="clearBtn">
+                        <i class="fas fa-trash-alt"></i> Очистить
+                    </button>
+                </div>
+            </section>
+
+            <!-- Секция парсинга -->
+            <section id="parse" class="section">
+                <div class="section-header">
+                    <h3><i class="fas fa-cogs"></i> Процесс парсинга</h3>
+                    <p>Извлечение и нормализация данных в реальном времени</p>
+                </div>
+
+                <div class="parsing-progress">
+                    <div class="progress-header">
+                        <h5>Обработка документов</h5>
+                        <span class="progress-percent" id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-steps">
+                        <div class="step active">
+                            <div class="step-icon">1</div>
+                            <span>Загрузка</span>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon">2</div>
+                            <span>Распознавание</span>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon">3</div>
+                            <span>Извлечение</span>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon">4</div>
+                            <span>Нормализация</span>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon">5</div>
+                            <span>Готово</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Лог парсинга -->
+                <div class="parsing-log">
+                    <div class="log-header">
+                        <h5><i class="fas fa-terminal"></i> Лог обработки</h5>
+                        <button class="btn-small" id="clearLogBtn">
+                            <i class="fas fa-trash"></i> Очистить лог
+                        </button>
+                    </div>
+                    <div class="log-content" id="logContent">
+                        <div class="log-entry success">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Система готова к работе. Загрузите документы для начала парсинга.</span>
+                            <span class="log-time">10:00:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Извлеченные реквизиты -->
+                <div class="extracted-data-preview">
+                    <h5><i class="fas fa-search"></i> Предпросмотр извлеченных данных</h5>
+                    <div class="preview-table-container">
+                        <table class="preview-table">
+                            <thead>
+                                <tr>
+                                    <th>Тип</th>
+                                    <th>Значение</th>
+                                    <th>Уверенность</th>
+                                </tr>
+                            </thead>
+                            <tbody id="extractedData">
+                                <tr class="empty-data">
+                                    <td colspan="3">
+                                        <i class="fas fa-database"></i>
+                                        <p>После парсинга здесь появятся извлеченные данные</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Секция результатов -->
+            <section id="results" class="section">
+                <div class="section-header">
+                    <h3><i class="fas fa-table"></i> Единая таблица данных</h3>
+                    <p>Все извлеченные данные в структурированном виде</p>
+                </div>
+
+                <div class="results-actions">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchTable" placeholder="Поиск по таблице..." class="search-input">
+                    </div>
+                    <div class="mobile-filter-toggle" id="filterToggle">
+                        <i class="fas fa-filter"></i> Фильтры
+                    </div>
+                    <div class="filter-buttons" id="filterButtons">
+                        <button class="filter-btn active">Все</button>
+                        <button class="filter-btn">Только PDF</button>
+                        <button class="filter-btn">Только Excel</button>
+                        <button class="filter-btn">Только CSV</button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <div class="table-container">
+                        <table class="results-table" id="resultsTable">
+                            <thead>
+                                <tr>
+                                    <th class="select-col"><input type="checkbox" id="selectAll"></th>
+                                    <th>№</th>
+                                    <th>Документ</th>
+                                    <th class="date-col">Дата</th>
+                                    <th class="counterparty-col">Контрагент</th>
+                                    <th class="mobile-hide">ИНН</th>
+                                    <th class="amount-col">Сумма</th>
+                                    <th class="mobile-hide">Тип</th>
+                                    <th>Статус</th>
+                                    <th class="actions-col">Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsTableBody">
+                                <tr class="placeholder">
+                                    <td colspan="10">
+                                        <div class="placeholder-content">
+                                            <i class="fas fa-database"></i>
+                                            <p>Данные появятся здесь после парсинга</p>
+                                            <small>Загрузите документы и начните парсинг</small>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="results-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-file-alt"></i>
+                        <div class="stat-info">
+                            <h4 id="totalDocs">0</h4>
+                            <p>Документов</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-ruble-sign"></i>
+                        <div class="stat-info">
+                            <h4 id="totalSum">0 ₽</h4>
+                            <p>Общая сумма</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-user-tie"></i>
+                        <div class="stat-info">
+                            <h4 id="totalCounterparties">0</h4>
+                            <p>Контрагентов</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <div class="stat-info">
+                            <h4 id="processingTime">0с</h4>
+                            <p>Время обработки</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Секция экспорта -->
+            <section id="export" class="section">
+                <div class="section-header">
+                    <h3><i class="fas fa-download"></i> Экспорт данных</h3>
+                    <p>Выгрузка обработанных данных в нужном формате</p>
+                </div>
+
+                <div class="export-options">
+                    <div class="export-card" data-format="excel">
+                        <div class="export-icon">
+                            <i class="fas fa-file-excel"></i>
+                        </div>
+                        <h4>Excel</h4>
+                        <p>XLSX формат с форматированием</p>
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i> Скачать
+                        </button>
+                    </div>
+
+                    <div class="export-card" data-format="csv">
+                        <div class="export-icon">
+                            <i class="fas fa-file-csv"></i>
+                        </div>
+                        <h4>CSV</h4>
+                        <p>Простой текстовый формат</p>
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i> Скачать
+                        </button>
+                    </div>
+
+                    <div class="export-card" data-format="json">
+                        <div class="export-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h4>JSON</h4>
+                        <p>Для интеграции с системами</p>
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i> Скачать
+                        </button>
+                    </div>
+
+                    <div class="export-card" data-format="pdf">
+                        <div class="export-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <h4>PDF отчет</h4>
+                        <p>Красивый отчет с графиками</p>
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i> Скачать
+                        </button>
+                    </div>
+                </div>
+
+                <div class="export-settings">
+                    <h5><i class="fas fa-cog"></i> Настройки экспорта</h5>
+                    <div class="settings-grid">
+                        <div class="setting">
+                            <label>Кодировка:</label>
+                            <select id="encoding" class="form-select">
+                                <option value="utf8">UTF-8</option>
+                                <option value="cp1251">Windows-1251</option>
+                            </select>
+                        </div>
+                        <div class="setting">
+                            <label>Разделитель CSV:</label>
+                            <select id="delimiter" class="form-select">
+                                <option value=",">Запятая (,)</option>
+                                <option value=";">Точка с запятой (;)</option>
+                            </select>
+                        </div>
+                        <div class="setting full-width">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="includeMetadata" checked>
+                                <span class="checkmark"></span>
+                                Включать метаданные
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Футер -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-file-contract"></i> SmartParser</h4>
+                    <p>Универсальный парсер первичных документов</p>
+                    <p class="copyright">© 2025 Все права защищены</p>
+                </div>
+                <div class="footer-section">
+                    <h5>Поддерживаемые форматы</h5>
+                    <ul>
+                        <li><i class="fas fa-check"></i> PDF (текст/сканы)</li>
+                        <li><i class="fas fa-check"></i> Excel (XLS/XLSX)</li>
+                        <li><i class="fas fa-check"></i> CSV/TXT</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Контакты</h5>
+                    <p><i class="fas fa-envelope"></i> support@smartparser.ru</p>
+                    <p class="mobile-contact"><i class="fas fa-phone"></i> +7 (999) 123-45-67</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p><i class="fas fa-info-circle"></i> Обработка происходит локально в браузере. Файлы не загружаются на сервер.</p>
+            </div>
+        </footer>
+
+        <!-- Мобильная навигация снизу -->
+        <div class="mobile-bottom-nav">
+            <a href="#upload" class="mobile-bottom-link active">
+                <i class="fas fa-upload"></i>
+                <span>Загрузка</span>
+            </a>
+            <a href="#parse" class="mobile-bottom-link">
+                <i class="fas fa-cogs"></i>
+                <span>Парсинг</span>
+            </a>
+            <a href="#results" class="mobile-bottom-link">
+                <i class="fas fa-table"></i>
+                <span>Данные</span>
+            </a>
+            <a href="#export" class="mobile-bottom-link">
+                <i class="fas fa-download"></i>
+                <span>Экспорт</span>
+            </a>
+        </div>
+
+        <!-- Уведомления -->
+        <div class="notification-container" id="notificationContainer"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
